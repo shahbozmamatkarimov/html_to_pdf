@@ -1,5 +1,5 @@
 <template>
-  <main class="mb-10">
+  <main class="mb-10 p-10">
     <div>
     <div>
       <label
@@ -10,7 +10,7 @@
         <p>WORD</p>
       </label>
     </div>
-    <button @click="downloadPdf">Download word document</button>
+    <button  class="bg-black px-5 py-1 text-white rounded-lg" v-if="store.wordToHtml?.length" @click="downloadPdf">Download as a PDF</button>
     <!-- <div>
       <select @change="(e) => (store.variantGrid = e.target.value)">
         <option v-for="i in 10" :value="i">{{ i }}</option>
