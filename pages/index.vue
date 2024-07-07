@@ -1,72 +1,73 @@
 <template>
   <main class="mb-10 p-10">
     <div>
-    <div>
-      <label
-        for="import_file"
-        class="flex gap-2 bg-white p-1.5 rounded-md border_ced cursor-pointer"
+      <div>
+        <label
+          for="import_file"
+          class="flex gap-2 bg-white p-1.5 rounded-md border_ced cursor-pointer"
+        >
+          <img class="h-7 w-7" src="@/assets/svg/word.png" alt="" />
+          <p>WORD</p>
+        </label>
+      </div>
+      <button
+        class="bg-black px-5 py-1 text-white rounded-lg"
+        v-if="store.wordToHtml?.length"
+        @click="downloadPdf"
       >
-        <img class="h-7 w-7" src="@/assets/svg/word.png" alt="" />
-        <p>WORD</p>
-      </label>
-    </div>
-    <button  class="bg-black px-5 py-1 text-white rounded-lg" v-if="store.wordToHtml?.length" @click="downloadPdf">Download as a PDF</button>
-    <!-- <div>
+        Download as a PDF
+      </button>
+      <!-- <div>
       <select @change="(e) => (store.variantGrid = e.target.value)">
         <option v-for="i in 10" :value="i">{{ i }}</option>
       </select>
     </div> -->
-    <div ref="content" id="pdf-content">
-      <div
-        class="min-w-full md:px-0 px-4"
-        v-for="(i, index) in store.wordToHtml"
-      >
-        <div class="pb-2">
-          <h1 class="flex gap-1 grid-cols-2">
-            <span class="font-medium">{{ index + 1 }}</span
-            >. <span v-html="i[1]"></span>
-          </h1>
-        </div>
-        <div>
-          <div
-            class="variant_cols grid grid-cols-[repeat(3, minmax(0, 1fr)] items-center mb-4 ml-4"
-          >
-            <button
-              v-for="(variant, v_index) in i"
-              v-show="v_index > 1"
-              class="flex items-center !min-h-[40px] w-full px-3 rounded-[10px] gap-5"
-            >
-              {{ variants[v_index - 2] }}
-              <p class="!text-start" v-html="variant"></p>
-            </button>
+      <div ref="content" id="pdf-content">
+        <div
+          class="min-w-full md:px-0 px-4"
+          v-for="(i, index) in store.wordToHtml"
+        >
+          <div class="pb-2">
+            <h1 class="flex gap-1 grid-cols-2">
+              <span class="font-medium">{{ index + 1 }}</span
+              >. <span v-html="i[1]"></span>
+            </h1>
           </div>
+          <div>
+            <div
+              class="variant_cols grid grid-cols-[repeat(3, minmax(0, 1fr)] items-center mb-4 ml-4"
+            >
+              <button
+                v-for="(variant, v_index) in i"
+                v-show="v_index > 1"
+                class="flex items-center !min-h-[40px] w-full px-3 rounded-[10px] gap-5"
+              >
+                {{ variants[v_index - 2] }}
+                <p class="!text-start" v-html="variant"></p>
+              </button>
+            </div>
+          </div>
+          <p class="bg-[#CCCCCC] h-[1px] sm:mx-0 -mx-4"></p>
         </div>
-        <p class="bg-[#CCCCCC] h-[1px] sm:mx-0 -mx-4"></p>
+      </div>
+      <input
+        @change="importFile"
+        class="input_file"
+        type="file"
+        id="import_file"
+      />
+    </div>
+    <div v-if="store.wordToHtml?.length">
+      <p>Tog'ri javoblar:</p>
+      <div @click="copyToClipboard" class="flex gap-3">
+        <ul class="flex flex-wrap gap-1" id="true_answers">
+          <li v-for="i in store.newIndices">
+            {{ variants[i.indexOf(2)] }}
+          </li>
+        </ul>
+        <button class="bg-black px-5 py-1 text-white rounded-lg">Copy</button>
       </div>
     </div>
-    <input
-      @change="importFile"
-      class="input_file"
-      type="file"
-      id="import_file"
-    />
-  </div>
-  <div v-if="store.wordToHtml?.length">
-    <p>Tog'ri javoblar:</p>
-    <div
-    @click="copyToClipboard"
-     class="flex gap-3">
-      <ul
-        class="flex flex-wrap gap-1"
-        id="true_answers"
-      >
-        <li v-for="i in store.newIndices">
-          {{ variants[i.indexOf(2)] }}
-        </li>
-      </ul>
-      <button class="bg-black px-5 py-1 text-white rounded-lg">Copy</button>
-    </div>
-  </div>
   </main>
 </template>
 
@@ -127,6 +128,11 @@ function htmlTableToArray(htmlTable) {
   //   const j = 2 + Math.floor(Math.random() * (k - 1)); // 2-indeksdan boshlab aralashtirish
   //   [result[i][k], result[i][j]] = [result[i][j], result[i][k]];
   // }
+
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
 
   store.newIndices = [];
 
